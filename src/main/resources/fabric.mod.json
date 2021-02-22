@@ -10,6 +10,7 @@
   ],
 
   "license": "MIT",
+  "icon": "assets/worldspecificviewdistance/icon.png",
 
   "environment": "*",
   "entrypoints": {
