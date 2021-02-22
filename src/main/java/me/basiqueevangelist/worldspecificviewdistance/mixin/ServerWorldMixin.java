@@ -25,9 +25,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.level.LevelProperties;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
@@ -39,28 +37,12 @@ public abstract class ServerWorldMixin extends World {
     @Shadow @Final private MinecraftServer server;
     private static final Logger LOGGER = LogManager.getLogger("ChunkyThings/ServerWorldMixin");
 
-    @Inject(method = "onPlayerRespawned", at = @At(value = "HEAD"), require = 1)
-    public void onPlayerRespawned(ServerPlayerEntity player, CallbackInfo cb) {
+    @Inject(method = "addPlayer", at = @At(value = "HEAD"), require = 1)
+    public void onPlayerAdded(ServerPlayerEntity player, CallbackInfo cb) {
         WSVDPersistentState state = WSVDPersistentState.getFrom(getPersistentStateManager());
         PlayerManager mgr = server.getPlayerManager();
 
-        LOGGER.debug("Player {} respawned in {}", player.getEntityName(), CommandUtils.getRegistryId(server, getDimension()));
-
-        int viewDistance = state.getLocalViewDistance();
-        if (viewDistance == 0)
-            viewDistance = mgr.getViewDistance() + 1;
-
-        LOGGER.debug("Setting {}'s view distance to {}", player.getEntityName(), viewDistance);
-
-        player.networkHandler.sendPacket(new ChunkLoadDistanceS2CPacket(viewDistance - 1));
-    }
-    
-    @Inject(method = "onPlayerChangeDimension", at = @At(value = "HEAD"), require = 1)
-    public void onPlayerChangeDimension(ServerPlayerEntity player, CallbackInfo cb) {
-        WSVDPersistentState state = WSVDPersistentState.getFrom(getPersistentStateManager());
-        PlayerManager mgr = server.getPlayerManager();
-
-        LOGGER.debug("Player {} traveled to {}", player.getEntityName(), CommandUtils.getRegistryId(server, getDimension()));
+        LOGGER.debug("Player {} added to {}", player.getEntityName(), CommandUtils.getRegistryId(server, getDimension()));
 
         int viewDistance = state.getLocalViewDistance();
         if (viewDistance == 0)
