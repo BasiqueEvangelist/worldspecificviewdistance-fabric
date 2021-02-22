@@ -21,9 +21,9 @@ public final class ViewDistanceCommand {
             literal("viewdistance")
                 .then(literal("set")
                     .requires((src) -> src.hasPermissionLevel(2))
-                    	.then(argument("dimension", DimensionArgumentType.dimension())
-	                        .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
-	                            .executes(ViewDistanceCommand::setWorldViewDistance))))
+                    .then(argument("dimension", DimensionArgumentType.dimension())
+                        .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
+                            .executes(ViewDistanceCommand::setWorldViewDistance))))
                 .then(literal("get")
                     .then(literal("global")
                         .executes(ViewDistanceCommand::getGlobalViewDistance))
@@ -34,6 +34,7 @@ public final class ViewDistanceCommand {
             commandDispatcher.register(
                 literal("viewdistance")
                     .then(literal("set")
+                        .requires((src) -> src.hasPermissionLevel(2))
                         .then(literal("global")
                             .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
                                 .executes(ViewDistanceCommand::setGlobalViewDistance)))));
