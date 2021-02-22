@@ -1,13 +1,17 @@
 {
   "schemaVersion": 1,
   "id": "worldspecificviewdistance",
-  "version": "0.1.0",
+  "version": "${version}",
 
   "name": "World Specific View Distance",
-  "description": "Set view distance separately for every dimension",
+  "description": "Set view distance per dimension to preserve server resources.",
   "authors": [
     "BasiqueEvangelist"
   ],
+  "contact": {
+    "sources": "https://github.com/BasiqueEvangelist/worldspecificviewdistance-fabric/",
+    "issues": "https://github.com/BasiqueEvangelist/worldspecificviewdistance-fabric/issues/"
+  },
 
   "license": "MIT",
   "icon": "assets/worldspecificviewdistance/icon.png",
