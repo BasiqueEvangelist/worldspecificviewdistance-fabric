@@ -26,6 +26,14 @@
     "worldspecificviewdistance.mixins.json"
   ],
 
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/bRTMbKdmZt"
+      }
+    }
+  },
+
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
