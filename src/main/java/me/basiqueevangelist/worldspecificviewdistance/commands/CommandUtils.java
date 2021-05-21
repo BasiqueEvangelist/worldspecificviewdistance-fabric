@@ -4,14 +4,16 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.LiteralText;
 import net.minecraft.world.dimension.DimensionType;
 
-import java.util.Objects;
-
 public class CommandUtils {
     public static LiteralText getMessage(String format, Object... args) {
         return new LiteralText(String.format(format, args));
     }
 
     public static String getRegistryId(MinecraftServer s, DimensionType dim) {
-        return Objects.requireNonNull(s.getRegistryManager().getDimensionTypes().getId(dim)).toString();
+        try {
+            return s.getRegistryManager().getDimensionTypes().getId(dim).toString();
+        } catch (NullPointerException npe) {
+            return "<couldn't get dimension id due to NPE>";
+        }
     }
 }
