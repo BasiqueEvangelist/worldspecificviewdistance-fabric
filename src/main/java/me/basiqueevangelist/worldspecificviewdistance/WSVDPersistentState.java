@@ -1,6 +1,6 @@
 package me.basiqueevangelist.worldspecificviewdistance;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -10,16 +10,12 @@ public class WSVDPersistentState extends PersistentState {
 
     private int localViewDistance;
 
-    public WSVDPersistentState() {
-        super(ID);
-    }
-
     public static WSVDPersistentState getFrom(ServerWorld w) {
         return getFrom(w.getPersistentStateManager());
     }
 
     public static WSVDPersistentState getFrom(PersistentStateManager mgr) {
-        return mgr.getOrCreate(WSVDPersistentState::new, ID);
+        return mgr.getOrCreate(WSVDPersistentState::fromNbt, WSVDPersistentState::new, ID);
     }
 
     public int getLocalViewDistance() {
@@ -32,13 +28,14 @@ public class WSVDPersistentState extends PersistentState {
         }
     }
 
-    @Override
-    public void fromTag(CompoundTag tag) {
-        localViewDistance = tag.getInt("LocalViewDistance");
+    public static WSVDPersistentState fromNbt(NbtCompound tag) {
+        WSVDPersistentState state = new WSVDPersistentState();
+        state.localViewDistance = tag.getInt("LocalViewDistance");
+        return state;
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         tag.putInt("LocalViewDistance", localViewDistance);
         return tag;
     }
