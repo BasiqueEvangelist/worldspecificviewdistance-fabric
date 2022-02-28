@@ -57,7 +57,7 @@ public final class ViewDistanceCommand {
 
         src.sendFeedback(CommandUtils.getMessage(
     		"Set view distance of world %s to %d",
-            CommandUtils.getRegistryId(src.getMinecraftServer(), w.getDimension()), viewdist), true);
+            CommandUtils.getRegistryId(src.getServer(), w.getDimension()), viewdist), true);
         return 1;
     }
 
@@ -71,11 +71,11 @@ public final class ViewDistanceCommand {
         if (viewDist != 0) {
             src.sendFeedback(CommandUtils.getMessage(
                 "View distance of world %s is %d",
-                CommandUtils.getRegistryId(src.getMinecraftServer(), w.getDimension()), viewDist), false);
+                CommandUtils.getRegistryId(src.getServer(), w.getDimension()), viewDist), false);
         }
         else {
             src.sendFeedback(CommandUtils.getMessage("View distance of world %s is unspecified (currently %d)",
-                CommandUtils.getRegistryId(src.getMinecraftServer(), w.getDimension()), src.getMinecraftServer().getPlayerManager().getViewDistance()+1), false);
+                CommandUtils.getRegistryId(src.getServer(), w.getDimension()), src.getServer().getPlayerManager().getViewDistance()+1), false);
         }
 
         return 1;
@@ -83,7 +83,7 @@ public final class ViewDistanceCommand {
 
     public static int getGlobalViewDistance(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
-        int viewDist = src.getMinecraftServer().getPlayerManager().getViewDistance() + 1;
+        int viewDist = src.getServer().getPlayerManager().getViewDistance() + 1;
 
         src.sendFeedback(CommandUtils.getMessage("Server-wide view distance is currently %d", viewDist), false);
 
@@ -94,7 +94,7 @@ public final class ViewDistanceCommand {
         ServerCommandSource src = ctx.getSource();
         int viewDist = Math.max(3, IntegerArgumentType.getInteger(ctx,"viewDistance"));
 
-        src.getMinecraftServer().getPlayerManager().setViewDistance(viewDist - 1);
+        src.getServer().getPlayerManager().setViewDistance(viewDist - 1);
         
         src.sendFeedback(CommandUtils.getMessage("Set server-wide view distance to %d", viewDist), true);
         return 1;

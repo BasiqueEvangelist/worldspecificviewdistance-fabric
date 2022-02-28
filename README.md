@@ -1,6 +1,6 @@
 ## Relieve memory pressure on your overstressed server! Load only those chunks that *matter*!
 
-[![Modrinth Badge](https://waffle.coffee/modrinth/worldspecificviewdistance/downloads)](https://modrinth.com/mod/worldspecificviewdistance)
+[![Modrinth Badge](https://img.shields.io/modrinth/dt/worldspecificviewdistance)](https://modrinth.com/mod/worldspecificviewdistance)
 
 Vanilla Minecraft uses the same view distance setting for all dimensions. High values allow you to admire the scenery in the overworld, but they also load lots of heavy chunks in the Nether that you will never see due to obstruction and the fog.
 

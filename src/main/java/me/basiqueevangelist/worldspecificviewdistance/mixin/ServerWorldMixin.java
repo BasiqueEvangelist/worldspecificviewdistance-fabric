@@ -3,6 +3,7 @@ package me.basiqueevangelist.worldspecificviewdistance.mixin;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.MutableWorldProperties;
 import org.apache.logging.log4j.LogManager;
@@ -29,13 +30,14 @@ import net.minecraft.world.dimension.DimensionType;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
-    protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
-        super(properties, registryRef, dimensionType, profiler, isClient, debugWorld, seed);
+    protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, RegistryEntry<DimensionType> registryEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
+        super(properties, registryRef, registryEntry, profiler, isClient, debugWorld, seed);
     }
 
-    @Shadow public PersistentStateManager getPersistentStateManager() { return null; }
+    @Shadow public abstract PersistentStateManager getPersistentStateManager();
     @Shadow @Final private MinecraftServer server;
-    private static final Logger LOGGER = LogManager.getLogger("ChunkyThings/ServerWorldMixin");
+
+    private static final Logger LOGGER = LogManager.getLogger("WSVD/ServerWorldMixin");
 
     @Inject(method = "addPlayer", at = @At(value = "HEAD"), require = 1)
     public void onPlayerAdded(ServerPlayerEntity player, CallbackInfo cb) {

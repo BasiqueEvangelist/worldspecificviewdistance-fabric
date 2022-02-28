@@ -20,7 +20,7 @@ import net.minecraft.server.world.ServerWorld;
 public class PlayerManagerMixin  {
 	@Shadow private int viewDistance;
 	@Shadow @Final private MinecraftServer server;
-	@Unique private static final Logger LOGGER = LogManager.getLogger("ChunkyThings/PlayerManagerMixin");
+	@Unique private static final Logger LOGGER = LogManager.getLogger("WSVD/PlayerManagerMixin");
 
 	/**
 	 * @reason Completely replaces logic.
