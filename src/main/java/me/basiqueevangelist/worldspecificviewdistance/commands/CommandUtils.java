@@ -1,13 +1,13 @@
 package me.basiqueevangelist.worldspecificviewdistance.commands;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 
 public class CommandUtils {
-    public static LiteralText getMessage(String format, Object... args) {
-        return new LiteralText(String.format(format, args));
+    public static Text getMessage(String format, Object... args) {
+        return Text.literal(String.format(format, args));
     }
 
     public static String getRegistryId(MinecraftServer s, DimensionType dim) {

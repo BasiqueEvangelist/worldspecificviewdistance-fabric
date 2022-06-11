@@ -6,8 +6,10 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.network.packet.s2c.play.ChunkLoadDistanceS2CPacket;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -16,7 +18,7 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public final class ViewDistanceCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher, boolean isDedicated) {
+    public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         commandDispatcher.register(
             literal("viewdistance")
                 .then(literal("set")
@@ -30,7 +32,7 @@ public final class ViewDistanceCommand {
                     .then(argument("dimension", DimensionArgumentType.dimension())
                         .executes(ViewDistanceCommand::getWorldViewDistance))));
 
-        if (isDedicated) {
+        if (environment.dedicated) {
             commandDispatcher.register(
                 literal("viewdistance")
                     .then(literal("set")
