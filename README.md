@@ -10,4 +10,4 @@ This mod allows setting view distance per dimension. You can dial it up where it
 `/viewdistance set minecraft:the_nether 10` - Sets the view distance of the nether to 10.  
 `/viewdistance get minecraft:overworld` - Gets the active view distance of the overworld.  
 `/viewdistance get global` - Gets global view distance.  
-`/viewdistance set global 10` - Temporarily sets global view distance to 10 (only on dedicated servers)
+`/viewdistance set global 10` - Temporarily sets global view distance to 10 on dedicated servers, and sets the save view distance to 10 on integrated servers

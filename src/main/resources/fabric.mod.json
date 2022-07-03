@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "me.basiqueevangelist.worldspecificviewdistance.WorldSpecificViewDistance"
+    ],
+    "cardinal-components": [
+      "me.basiqueevangelist.worldspecificviewdistance.component.WSVDComponents"
     ]
   },
   "mixins": [
@@ -31,12 +34,16 @@
       "links": {
         "modmenu.discord": "https://discord.gg/bRTMbKdmZt"
       }
-    }
+    },
+    "cardinal-components": [
+      "worldspecificviewdistance:global_distance"
+    ]
   },
 
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": ">=1.19"
+    "minecraft": ">=1.19",
+    "cardinal-components-level": "*"
   }
 }

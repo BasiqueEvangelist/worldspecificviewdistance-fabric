@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import me.basiqueevangelist.worldspecificviewdistance.component.WSVDComponents;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.network.packet.s2c.play.SimulationDistanceS2CPacket;
@@ -23,6 +24,9 @@ public final class SimulationDistanceCommand {
             literal("simulationdistance")
                 .then(literal("set")
                     .requires((src) -> src.hasPermissionLevel(2))
+                    .then(literal("global")
+                        .then(argument("simulationDistance", IntegerArgumentType.integer(0, 255))
+                            .executes(SimulationDistanceCommand::setGlobalSimulationDistance)))
                     .then(argument("dimension", DimensionArgumentType.dimension())
                         .then(argument("simulationDistance", IntegerArgumentType.integer(0, 255))
                             .executes(SimulationDistanceCommand::setWorldSimulationDistance))))
@@ -31,16 +35,6 @@ public final class SimulationDistanceCommand {
                         .executes(SimulationDistanceCommand::getGlobalSimulationDistance))
                     .then(argument("dimension", DimensionArgumentType.dimension())
                         .executes(SimulationDistanceCommand::getWorldSimulationDistance))));
-
-        if (environment.dedicated) {
-            commandDispatcher.register(
-                literal("simulationdistance")
-                    .then(literal("set")
-                        .requires((src) -> src.hasPermissionLevel(2))
-                        .then(literal("global")
-                            .then(argument("simulationDistance", IntegerArgumentType.integer(0, 255))
-                                .executes(SimulationDistanceCommand::setGlobalSimulationDistance)))));
-        }
     }
 
     public static int setWorldSimulationDistance(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
@@ -94,11 +88,24 @@ public final class SimulationDistanceCommand {
 
     public static int setGlobalSimulationDistance(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
-        int simDist = Math.max(3, IntegerArgumentType.getInteger(ctx,"simulationDistance"));
+        int simDist = IntegerArgumentType.getInteger(ctx,"simulationDistance");
 
-        src.getServer().getPlayerManager().setSimulationDistance(simDist - 1);
-        
-        src.sendFeedback(CommandUtils.getMessage("Set server-wide simulation distance to %d", simDist), true);
+        if (src.getServer().isDedicated()) {
+            src.getServer().getPlayerManager().setSimulationDistance(simDist - 1);
+
+            src.sendFeedback(CommandUtils.getMessage("Set server-wide simulation distance to %d", simDist), true);
+        } else {
+            var component = WSVDComponents.GLOBAL_DISTANCE.get(src.getServer().getSaveProperties());
+
+            component.globalSimulationDistance = simDist;
+
+            if (simDist != 0) {
+                src.sendFeedback(CommandUtils.getMessage("Set save simulation distance to %d", simDist), true);
+            } else {
+                src.sendFeedback(CommandUtils.getMessage("Unset save simulation distance"), true);
+            }
+        }
+
         return 1;
     }
 

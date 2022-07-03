@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import me.basiqueevangelist.worldspecificviewdistance.component.WSVDComponents;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.network.packet.s2c.play.ChunkLoadDistanceS2CPacket;
@@ -23,6 +24,9 @@ public final class ViewDistanceCommand {
             literal("viewdistance")
                 .then(literal("set")
                     .requires((src) -> src.hasPermissionLevel(2))
+                    .then(literal("global")
+                        .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
+                            .executes(ViewDistanceCommand::setGlobalViewDistance)))
                     .then(argument("dimension", DimensionArgumentType.dimension())
                         .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
                             .executes(ViewDistanceCommand::setWorldViewDistance))))
@@ -31,16 +35,6 @@ public final class ViewDistanceCommand {
                         .executes(ViewDistanceCommand::getGlobalViewDistance))
                     .then(argument("dimension", DimensionArgumentType.dimension())
                         .executes(ViewDistanceCommand::getWorldViewDistance))));
-
-        if (environment.dedicated) {
-            commandDispatcher.register(
-                literal("viewdistance")
-                    .then(literal("set")
-                        .requires((src) -> src.hasPermissionLevel(2))
-                        .then(literal("global")
-                            .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
-                                .executes(ViewDistanceCommand::setGlobalViewDistance)))));
-        }
     }
 
     public static int setWorldViewDistance(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
@@ -94,11 +88,23 @@ public final class ViewDistanceCommand {
 
     public static int setGlobalViewDistance(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource src = ctx.getSource();
-        int viewDist = Math.max(3, IntegerArgumentType.getInteger(ctx,"viewDistance"));
+        int viewDist = IntegerArgumentType.getInteger(ctx,"viewDistance");
 
-        src.getServer().getPlayerManager().setViewDistance(viewDist - 1);
-        
-        src.sendFeedback(CommandUtils.getMessage("Set server-wide view distance to %d", viewDist), true);
+        if (src.getServer().isDedicated()) {
+            src.getServer().getPlayerManager().setViewDistance(viewDist - 1);
+
+            src.sendFeedback(CommandUtils.getMessage("Set server-wide view distance to %d", viewDist), true);
+        } else {
+            var component = WSVDComponents.GLOBAL_DISTANCE.get(src.getServer().getSaveProperties());
+
+            component.globalViewDistance = viewDist;
+
+            if (viewDist != 0) {
+                src.sendFeedback(CommandUtils.getMessage("Set save view distance to %d", viewDist), true);
+            } else {
+                src.sendFeedback(CommandUtils.getMessage("Unset save view distance"), true);
+            }
+        }
         return 1;
     }
 

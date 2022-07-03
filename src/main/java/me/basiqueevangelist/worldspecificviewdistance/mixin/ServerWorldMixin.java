@@ -3,6 +3,7 @@ package me.basiqueevangelist.worldspecificviewdistance.mixin;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import me.basiqueevangelist.worldspecificviewdistance.commands.DistanceUtils;
 import net.minecraft.network.packet.s2c.play.SimulationDistanceS2CPacket;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryKey;
@@ -35,29 +36,21 @@ public abstract class ServerWorldMixin extends World {
         super(properties, registryRef, dimension, profiler, isClient, debugWorld, seed, maxChainedNeighborUpdates);
     }
 
-    @Shadow public abstract PersistentStateManager getPersistentStateManager();
     @Shadow @Final private MinecraftServer server;
 
     private static final Logger LOGGER = LogManager.getLogger("WSVD/ServerWorldMixin");
 
     @Inject(method = "addPlayer", at = @At(value = "HEAD"), require = 1)
     public void onPlayerAdded(ServerPlayerEntity player, CallbackInfo cb) {
-        WSVDPersistentState state = WSVDPersistentState.getFrom(getPersistentStateManager());
-        PlayerManager mgr = server.getPlayerManager();
-
         LOGGER.debug("Player {} added to {}", player.getEntityName(), CommandUtils.getRegistryId(server, getDimension()));
 
-        int viewDistance = state.getLocalViewDistance();
-        if (viewDistance == 0)
-            viewDistance = mgr.getViewDistance() + 1;
+        int viewDistance = DistanceUtils.resolveViewDistance((ServerWorld)(Object) this);
 
         LOGGER.debug("Setting {}'s view distance to {}", player.getEntityName(), viewDistance);
 
         player.networkHandler.sendPacket(new ChunkLoadDistanceS2CPacket(viewDistance - 1));
 
-        int simulationDistance = state.getLocalSimulationDistance();
-        if (simulationDistance == 0)
-            simulationDistance = mgr.getSimulationDistance() + 1;
+        int simulationDistance = DistanceUtils.resolveSimulationDistance((ServerWorld)(Object) this);
 
         LOGGER.debug("Setting {}'s simulation distance to {}", player.getEntityName(), simulationDistance);
 
@@ -67,22 +60,16 @@ public abstract class ServerWorldMixin extends World {
     @Inject(method = "<init>*", at = @At(value = "RETURN"), require = 1)
     public void setViewDistanceOnCreate(CallbackInfo cb) {
         ServerChunkManager cmgr = (ServerChunkManager)getChunkManager();
-        WSVDPersistentState state = WSVDPersistentState.getFrom(getPersistentStateManager());
-        PlayerManager pmgr = server.getPlayerManager();
 
         LOGGER.debug("World {} is loaded", CommandUtils.getRegistryId(server, getDimension()));
 
-        int viewDistance = state.getLocalViewDistance();
-        if (viewDistance == 0)
-            viewDistance = pmgr.getViewDistance() + 1;
+        int viewDistance = DistanceUtils.resolveViewDistance((ServerWorld)(Object) this);
 
         LOGGER.debug("Setting {}'s view distance to {}", CommandUtils.getRegistryId(server, getDimension()), viewDistance);
 
         cmgr.applyViewDistance(viewDistance - 1);
 
-        int simulationDistance = state.getLocalSimulationDistance();
-        if (simulationDistance == 0)
-            simulationDistance = pmgr.getSimulationDistance() + 1;
+        int simulationDistance = DistanceUtils.resolveSimulationDistance((ServerWorld)(Object) this);
 
         LOGGER.debug("Setting {}'s simulation distance to {}", CommandUtils.getRegistryId(server, getDimension()), simulationDistance);
 
