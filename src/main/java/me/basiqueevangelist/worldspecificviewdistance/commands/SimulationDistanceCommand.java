@@ -53,7 +53,7 @@ public final class SimulationDistanceCommand {
 
         src.sendFeedback(CommandUtils.getMessage(
     		"Set simulation distance of world %s to %d",
-            CommandUtils.getRegistryId(src.getServer(), w.getDimension()), simDist), true);
+            CommandUtils.getRegistryId(w), simDist), true);
         return 1;
     }
 
@@ -67,11 +67,11 @@ public final class SimulationDistanceCommand {
         if (simDist != 0) {
             src.sendFeedback(CommandUtils.getMessage(
                 "Simulation distance of world %s is %d",
-                CommandUtils.getRegistryId(src.getServer(), w.getDimension()), simDist), false);
+                CommandUtils.getRegistryId(w), simDist), false);
         }
         else {
             src.sendFeedback(CommandUtils.getMessage("Simulation distance of world %s is unspecified (currently %d)",
-                CommandUtils.getRegistryId(src.getServer(), w.getDimension()), src.getServer().getPlayerManager().getSimulationDistance() + 1), false);
+                CommandUtils.getRegistryId(w), src.getServer().getPlayerManager().getSimulationDistance() + 1), false);
         }
 
         return 1;

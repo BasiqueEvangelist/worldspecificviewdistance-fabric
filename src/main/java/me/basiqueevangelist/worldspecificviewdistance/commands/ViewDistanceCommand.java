@@ -53,7 +53,7 @@ public final class ViewDistanceCommand {
 
         src.sendFeedback(CommandUtils.getMessage(
     		"Set view distance of world %s to %d",
-            CommandUtils.getRegistryId(src.getServer(), w.getDimension()), viewdist), true);
+            CommandUtils.getRegistryId(w), viewdist), true);
         return 1;
     }
 
@@ -67,11 +67,11 @@ public final class ViewDistanceCommand {
         if (viewDist != 0) {
             src.sendFeedback(CommandUtils.getMessage(
                 "View distance of world %s is %d",
-                CommandUtils.getRegistryId(src.getServer(), w.getDimension()), viewDist), false);
+                CommandUtils.getRegistryId(w), viewDist), false);
         }
         else {
             src.sendFeedback(CommandUtils.getMessage("View distance of world %s is unspecified (currently %d)",
-                CommandUtils.getRegistryId(src.getServer(), w.getDimension()), src.getServer().getPlayerManager().getViewDistance()+1), false);
+                CommandUtils.getRegistryId(w), src.getServer().getPlayerManager().getViewDistance()+1), false);
         }
 
         return 1;
