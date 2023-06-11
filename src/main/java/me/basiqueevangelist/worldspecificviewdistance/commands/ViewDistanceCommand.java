@@ -51,7 +51,7 @@ public final class ViewDistanceCommand {
 
         w.getChunkManager().applyViewDistance(viewdist == 0 ? w.getServer().getPlayerManager().getViewDistance(): viewdist-1);
 
-        src.sendFeedback(CommandUtils.getMessage(
+        src.sendFeedback(() -> CommandUtils.getMessage(
     		"Set view distance of world %s to %d",
             CommandUtils.getRegistryId(w), viewdist), true);
         return 1;
@@ -65,12 +65,12 @@ public final class ViewDistanceCommand {
         int viewDist = state.getLocalViewDistance();
 
         if (viewDist != 0) {
-            src.sendFeedback(CommandUtils.getMessage(
+            src.sendFeedback(() -> CommandUtils.getMessage(
                 "View distance of world %s is %d",
                 CommandUtils.getRegistryId(w), viewDist), false);
         }
         else {
-            src.sendFeedback(CommandUtils.getMessage("View distance of world %s is unspecified (currently %d)",
+            src.sendFeedback(() -> CommandUtils.getMessage("View distance of world %s is unspecified (currently %d)",
                 CommandUtils.getRegistryId(w), src.getServer().getPlayerManager().getViewDistance()+1), false);
         }
 
@@ -81,7 +81,7 @@ public final class ViewDistanceCommand {
         ServerCommandSource src = ctx.getSource();
         int viewDist = src.getServer().getPlayerManager().getViewDistance() + 1;
 
-        src.sendFeedback(CommandUtils.getMessage("Server-wide view distance is currently %d", viewDist), false);
+        src.sendFeedback(() -> CommandUtils.getMessage("Server-wide view distance is currently %d", viewDist), false);
 
         return 1;
     }
@@ -93,16 +93,16 @@ public final class ViewDistanceCommand {
         if (src.getServer().isDedicated()) {
             src.getServer().getPlayerManager().setViewDistance(viewDist - 1);
 
-            src.sendFeedback(CommandUtils.getMessage("Set server-wide view distance to %d", viewDist), true);
+            src.sendFeedback(() -> CommandUtils.getMessage("Set server-wide view distance to %d", viewDist), true);
         } else {
             var component = WSVDComponents.GLOBAL_DISTANCE.get(src.getServer().getSaveProperties());
 
             component.globalViewDistance = viewDist;
 
             if (viewDist != 0) {
-                src.sendFeedback(CommandUtils.getMessage("Set save view distance to %d", viewDist), true);
+                src.sendFeedback(() -> CommandUtils.getMessage("Set save view distance to %d", viewDist), true);
             } else {
-                src.sendFeedback(CommandUtils.getMessage("Unset save view distance"), true);
+                src.sendFeedback(() -> CommandUtils.getMessage("Unset save view distance"), true);
             }
         }
         return 1;

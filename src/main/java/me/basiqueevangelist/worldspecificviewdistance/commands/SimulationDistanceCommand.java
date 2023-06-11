@@ -51,7 +51,7 @@ public final class SimulationDistanceCommand {
 
         w.getChunkManager().applySimulationDistance(simDist == 0 ? w.getServer().getPlayerManager().getSimulationDistance(): simDist - 1);
 
-        src.sendFeedback(CommandUtils.getMessage(
+        src.sendFeedback(() -> CommandUtils.getMessage(
     		"Set simulation distance of world %s to %d",
             CommandUtils.getRegistryId(w), simDist), true);
         return 1;
@@ -65,12 +65,12 @@ public final class SimulationDistanceCommand {
         int simDist = state.getLocalSimulationDistance();
 
         if (simDist != 0) {
-            src.sendFeedback(CommandUtils.getMessage(
+            src.sendFeedback(() -> CommandUtils.getMessage(
                 "Simulation distance of world %s is %d",
                 CommandUtils.getRegistryId(w), simDist), false);
         }
         else {
-            src.sendFeedback(CommandUtils.getMessage("Simulation distance of world %s is unspecified (currently %d)",
+            src.sendFeedback(() -> CommandUtils.getMessage("Simulation distance of world %s is unspecified (currently %d)",
                 CommandUtils.getRegistryId(w), src.getServer().getPlayerManager().getSimulationDistance() + 1), false);
         }
 
@@ -81,7 +81,7 @@ public final class SimulationDistanceCommand {
         ServerCommandSource src = ctx.getSource();
         int simDist = src.getServer().getPlayerManager().getSimulationDistance() + 1;
 
-        src.sendFeedback(CommandUtils.getMessage("Server-wide simulation distance is currently %d", simDist), false);
+        src.sendFeedback(() -> CommandUtils.getMessage("Server-wide simulation distance is currently %d", simDist), false);
 
         return 1;
     }
@@ -93,16 +93,16 @@ public final class SimulationDistanceCommand {
         if (src.getServer().isDedicated()) {
             src.getServer().getPlayerManager().setSimulationDistance(simDist - 1);
 
-            src.sendFeedback(CommandUtils.getMessage("Set server-wide simulation distance to %d", simDist), true);
+            src.sendFeedback(() -> CommandUtils.getMessage("Set server-wide simulation distance to %d", simDist), true);
         } else {
             var component = WSVDComponents.GLOBAL_DISTANCE.get(src.getServer().getSaveProperties());
 
             component.globalSimulationDistance = simDist;
 
             if (simDist != 0) {
-                src.sendFeedback(CommandUtils.getMessage("Set save simulation distance to %d", simDist), true);
+                src.sendFeedback(() -> CommandUtils.getMessage("Set save simulation distance to %d", simDist), true);
             } else {
-                src.sendFeedback(CommandUtils.getMessage("Unset save simulation distance"), true);
+                src.sendFeedback(() -> CommandUtils.getMessage("Unset save simulation distance"), true);
             }
         }
 
