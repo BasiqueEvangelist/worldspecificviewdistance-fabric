@@ -1,12 +1,18 @@
 package me.basiqueevangelist.worldspecificviewdistance;
 
+import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 
 public class WSVDPersistentState extends PersistentState {
-    public static String ID = "worldspecificviewdistance";
+    public static final String ID = "worldspecificviewdistance";
+    public static final PersistentState.Type<WSVDPersistentState> TYPE = new Type<>(
+        WSVDPersistentState::new,
+        WSVDPersistentState::fromNbt,
+        DataFixTypes.LEVEL
+    );
 
     private int localViewDistance;
     private int localSimulationDistance;
@@ -16,7 +22,7 @@ public class WSVDPersistentState extends PersistentState {
     }
 
     public static WSVDPersistentState getFrom(PersistentStateManager mgr) {
-        return mgr.getOrCreate(WSVDPersistentState::fromNbt, WSVDPersistentState::new, ID);
+        return mgr.getOrCreate(TYPE, ID);
     }
 
     public int getLocalViewDistance() {
