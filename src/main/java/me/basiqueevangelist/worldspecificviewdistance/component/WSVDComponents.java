@@ -1,10 +1,10 @@
 package me.basiqueevangelist.worldspecificviewdistance.component;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
-import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
-import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
 import net.minecraft.util.Identifier;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.level.LevelComponentFactoryRegistry;
+import org.ladysnake.cca.api.v3.level.LevelComponentInitializer;
 
 public class WSVDComponents implements LevelComponentInitializer {
     public static final ComponentKey<GlobalDistanceComponent> GLOBAL_DISTANCE

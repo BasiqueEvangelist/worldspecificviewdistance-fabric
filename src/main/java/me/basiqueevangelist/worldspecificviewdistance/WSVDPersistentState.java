@@ -2,6 +2,7 @@ package me.basiqueevangelist.worldspecificviewdistance;
 
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -43,7 +44,7 @@ public class WSVDPersistentState extends PersistentState {
         this.localSimulationDistance = localSimulationDistance;
     }
 
-    public static WSVDPersistentState fromNbt(NbtCompound tag) {
+    public static WSVDPersistentState fromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
         WSVDPersistentState state = new WSVDPersistentState();
         state.localViewDistance = tag.getInt("LocalViewDistance");
         state.localSimulationDistance = tag.getInt("LocalSimulationDistance");
@@ -51,7 +52,7 @@ public class WSVDPersistentState extends PersistentState {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
         tag.putInt("LocalViewDistance", localViewDistance);
         tag.putInt("LocalSimulationDistance", localSimulationDistance);
         return tag;
