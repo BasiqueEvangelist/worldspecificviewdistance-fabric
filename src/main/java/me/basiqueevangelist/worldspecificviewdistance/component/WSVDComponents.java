@@ -9,7 +9,7 @@ import org.ladysnake.cca.api.v3.level.LevelComponentInitializer;
 public class WSVDComponents implements LevelComponentInitializer {
     public static final ComponentKey<GlobalDistanceComponent> GLOBAL_DISTANCE
         = ComponentRegistry.getOrCreate(
-            new Identifier("worldspecificviewdistance:global_distance"),
+            Identifier.of("worldspecificviewdistance:global_distance"),
             GlobalDistanceComponent.class
         );
 
