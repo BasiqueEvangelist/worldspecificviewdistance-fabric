@@ -10,8 +10,8 @@ public class GlobalDistanceComponent implements Component {
 
     @Override
     public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        globalViewDistance = tag.getInt("GlobalViewDistance");
-        globalSimulationDistance = tag.getInt("GlobalSimulationDistance");
+        tag.getInt("GlobalViewDistance").ifPresent(integer -> this.globalViewDistance = integer);
+        tag.getInt("GlobalSimulationDistance").ifPresent(integer -> this.globalSimulationDistance = integer);
     }
 
     @Override
