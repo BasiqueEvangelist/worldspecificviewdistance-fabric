@@ -1,18 +1,20 @@
 package me.basiqueevangelist.worldspecificviewdistance;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.datafixer.DataFixTypes;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
+import net.minecraft.world.PersistentStateType;
 
 public class WSVDPersistentState extends PersistentState {
     public static final String ID = "worldspecificviewdistance";
-    public static final PersistentState.Type<WSVDPersistentState> TYPE = new Type<>(
-        WSVDPersistentState::new,
-        WSVDPersistentState::fromNbt,
-        DataFixTypes.LEVEL
+    public static final PersistentStateType<WSVDPersistentState> TYPE = new PersistentStateType<>(
+            ID, context -> new WSVDPersistentState(), context -> {
+        var state = getFrom(context.getWorldOrThrow());
+        return WSVDPersistentState.Packed.CODEC.xmap(state::unpackState, WSVDPersistentState::pack);
+    }, DataFixTypes.LEVEL
     );
 
     private int localViewDistance;
@@ -23,7 +25,7 @@ public class WSVDPersistentState extends PersistentState {
     }
 
     public static WSVDPersistentState getFrom(PersistentStateManager mgr) {
-        return mgr.getOrCreate(TYPE, ID);
+        return mgr.getOrCreate(TYPE);
     }
 
     public int getLocalViewDistance() {
@@ -44,22 +46,31 @@ public class WSVDPersistentState extends PersistentState {
         this.localSimulationDistance = localSimulationDistance;
     }
 
-    public static WSVDPersistentState fromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        WSVDPersistentState state = new WSVDPersistentState();
-        state.localViewDistance = tag.getInt("LocalViewDistance");
-        state.localSimulationDistance = tag.getInt("LocalSimulationDistance");
-        return state;
-    }
-
-    @Override
-    public NbtCompound writeNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
-        tag.putInt("LocalViewDistance", localViewDistance);
-        tag.putInt("LocalSimulationDistance", localSimulationDistance);
-        return tag;
-    }
-
     @Override
     public boolean isDirty() {
         return true;
+    }
+
+    private WSVDPersistentState unpackState(WSVDPersistentState.Packed packedState) {
+        var state = new WSVDPersistentState();
+        state.localViewDistance = packedState.localViewDistance;
+        state.localSimulationDistance = packedState.localSimulationDistance;
+        return state;
+    }
+
+    private static WSVDPersistentState.Packed pack(WSVDPersistentState state) {
+        return new Packed(state.localViewDistance, state.localSimulationDistance);
+    }
+
+    public record Packed(
+            int localViewDistance, int localSimulationDistance
+    ) {
+        public static final Codec<Packed> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                                Codec.INT.fieldOf("localViewDistance").forGetter(Packed::localViewDistance),
+                                Codec.INT.fieldOf("localSimulationDistance").forGetter(Packed::localSimulationDistance)
+                        )
+                        .apply(instance, Packed::new)
+        );
     }
 }
