@@ -12,7 +12,7 @@ public class WSVDPersistentState extends PersistentState {
     public static final String ID = "worldspecificviewdistance";
     public static final PersistentStateType<WSVDPersistentState> TYPE = new PersistentStateType<>(
             ID, context -> new WSVDPersistentState(), context -> {
-        var state = getFrom(context.getWorldOrThrow());
+        var state = new WSVDPersistentState();
         return WSVDPersistentState.Packed.CODEC.xmap(state::unpackState, WSVDPersistentState::pack);
     }, DataFixTypes.LEVEL
     );
