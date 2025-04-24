@@ -67,8 +67,8 @@ public class WSVDPersistentState extends PersistentState {
     ) {
         public static final Codec<Packed> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                                Codec.INT.fieldOf("localViewDistance").forGetter(Packed::localViewDistance),
-                                Codec.INT.fieldOf("localSimulationDistance").forGetter(Packed::localSimulationDistance)
+                                Codec.INT.fieldOf("local_view_distance").forGetter(Packed::localViewDistance),
+                                Codec.INT.fieldOf("local_simulation_distance").forGetter(Packed::localSimulationDistance)
                         )
                         .apply(instance, Packed::new)
         );
