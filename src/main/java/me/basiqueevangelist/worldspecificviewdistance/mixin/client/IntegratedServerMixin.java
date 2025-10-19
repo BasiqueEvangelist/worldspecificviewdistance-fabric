@@ -13,7 +13,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
         super(null, null, null, null, null, null, null, null);
     }
 
-    @ModifyVariable(method = "tick", at = @At(value = "LOAD", ordinal = 0), index = 5)
+    @ModifyVariable(method = "tick", at = @At(value = "LOAD", ordinal = 0), index = 4)
     private int makeIntegratedServerNotMald(int viewDist) {
         var component = WSVDComponents.GLOBAL_DISTANCE.get(saveProperties);
 
@@ -24,7 +24,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
         }
     }
 
-    @ModifyVariable(method = "tick", at = @At(value = "LOAD", ordinal = 0), index = 6)
+    @ModifyVariable(method = "tick", at = @At(value = "LOAD", ordinal = 0), index = 5)
     private int makeIntegratedServerNotMaldTwo(int simDist) {
         var component = WSVDComponents.GLOBAL_DISTANCE.get(saveProperties);
 
