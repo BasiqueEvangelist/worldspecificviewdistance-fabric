@@ -11,8 +11,8 @@ import net.minecraft.world.PersistentStateType;
 public class WSVDPersistentState extends PersistentState {
     public static final String ID = "worldspecificviewdistance";
     public static final PersistentStateType<WSVDPersistentState> TYPE = new PersistentStateType<>(
-            ID, context -> new WSVDPersistentState(),
-        context -> Packed.CODEC.xmap(WSVDPersistentState::unpackState, WSVDPersistentState::pack), DataFixTypes.LEVEL
+            ID, WSVDPersistentState::new,
+        Packed.CODEC.xmap(WSVDPersistentState::unpackState, WSVDPersistentState::pack), DataFixTypes.LEVEL
     );
 
     private int localViewDistance;

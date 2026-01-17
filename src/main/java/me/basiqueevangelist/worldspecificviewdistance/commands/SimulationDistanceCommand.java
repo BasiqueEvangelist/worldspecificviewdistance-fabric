@@ -23,7 +23,7 @@ public final class SimulationDistanceCommand {
         commandDispatcher.register(
             literal("simulationdistance")
                 .then(literal("set")
-                    .requires((src) -> src.hasPermissionLevel(2))
+                    .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK))
                     .then(literal("global")
                         .then(argument("simulationDistance", IntegerArgumentType.integer(0, 255))
                             .executes(SimulationDistanceCommand::setGlobalSimulationDistance)))
