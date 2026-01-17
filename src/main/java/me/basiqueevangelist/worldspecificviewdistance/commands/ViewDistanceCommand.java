@@ -23,7 +23,7 @@ public final class ViewDistanceCommand {
         commandDispatcher.register(
             literal("viewdistance")
                 .then(literal("set")
-                    .requires((src) -> src.hasPermissionLevel(2))
+                    .requires(CommandManager.requirePermissionLevel(CommandManager.OWNERS_CHECK))
                     .then(literal("global")
                         .then(argument("viewDistance", IntegerArgumentType.integer(0, 255))
                             .executes(ViewDistanceCommand::setGlobalViewDistance)))
