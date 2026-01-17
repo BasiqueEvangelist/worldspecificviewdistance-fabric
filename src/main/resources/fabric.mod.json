@@ -8,6 +8,9 @@
   "authors": [
     "BasiqueEvangelist"
   ],
+  "contributors": [
+    "SteveKunG"
+  ],
   "contact": {
     "sources": "https://github.com/BasiqueEvangelist/worldspecificviewdistance-fabric/",
     "issues": "https://github.com/BasiqueEvangelist/worldspecificviewdistance-fabric/issues/"
