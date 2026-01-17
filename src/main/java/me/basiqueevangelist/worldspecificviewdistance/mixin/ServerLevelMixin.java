@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerLevel.class)
-public abstract class ServerWorldMixin extends Level {
-    protected ServerWorldMixin(WritableLevelData properties, ResourceKey<Level> registryRef, RegistryAccess registryManager, Holder<DimensionType> dimensionEntry, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
+public abstract class ServerLevelMixin extends Level {
+    protected ServerLevelMixin(WritableLevelData properties, ResourceKey<Level> registryRef, RegistryAccess registryManager, Holder<DimensionType> dimensionEntry, boolean isClient, boolean debugWorld, long seed, int maxChainedNeighborUpdates) {
         super(properties, registryRef, registryManager, dimensionEntry, isClient, debugWorld, seed, maxChainedNeighborUpdates);
     }
 
@@ -34,12 +34,12 @@ public abstract class ServerWorldMixin extends Level {
     
     @Inject(method = "<init>*", at = @At(value = "RETURN"), require = 1)
     public void setViewDistanceOnCreate(CallbackInfo cb) {
-        ServerChunkCache cmgr = (ServerChunkCache)getChunkSource();
+        ServerChunkCache cache = (ServerChunkCache)getChunkSource();
 
         int viewDistance = DistanceUtils.resolveViewDistance((ServerLevel)(Object) this);
-        cmgr.setViewDistance(viewDistance - 1);
+        cache.setViewDistance(viewDistance - 1);
 
         int simulationDistance = DistanceUtils.resolveSimulationDistance((ServerLevel)(Object) this);
-        cmgr.setSimulationDistance(simulationDistance - 1);
+        cache.setSimulationDistance(simulationDistance - 1);
     }
 }

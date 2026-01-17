@@ -4,8 +4,8 @@
     "package": "me.basiqueevangelist.worldspecificviewdistance.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "PlayerManagerMixin",
-        "ServerWorldMixin"
+        "PlayerListMixin",
+        "ServerLevelMixin"
     ],
     "injectors": {
         "defaultRequire": 1

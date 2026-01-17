@@ -1,6 +1,6 @@
 package me.basiqueevangelist.worldspecificviewdistance.commands;
 
-import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import me.basiqueevangelist.worldspecificviewdistance.WSVDSavedData;
 import me.basiqueevangelist.worldspecificviewdistance.component.GlobalDistanceComponent;
 import me.basiqueevangelist.worldspecificviewdistance.component.WSVDComponents;
 import net.minecraft.server.level.ServerLevel;
@@ -10,11 +10,11 @@ public final class DistanceUtils {
 
     }
 
-    public static int resolveViewDistance(ServerLevel world) {
-        WSVDPersistentState state = WSVDPersistentState.getFrom(world);
-        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(world.getServer().getWorldData());
+    public static int resolveViewDistance(ServerLevel level) {
+        WSVDSavedData data = WSVDSavedData.getFrom(level);
+        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(level.getServer().getWorldData());
 
-        int viewDistance = state.getLocalViewDistance();
+        int viewDistance = data.getLocalViewDistance();
 
         if (viewDistance != 0)
             return viewDistance;
@@ -24,14 +24,14 @@ public final class DistanceUtils {
         if (viewDistance != 0)
             return viewDistance;
 
-        return world.getServer().getPlayerList().getViewDistance() + 1;
+        return level.getServer().getPlayerList().getViewDistance() + 1;
     }
 
-    public static int resolveSimulationDistance(ServerLevel world) {
-        WSVDPersistentState state = WSVDPersistentState.getFrom(world);
-        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(world.getServer().getWorldData());
+    public static int resolveSimulationDistance(ServerLevel level) {
+        WSVDSavedData data = WSVDSavedData.getFrom(level);
+        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(level.getServer().getWorldData());
 
-        int simDistance = state.getLocalSimulationDistance();
+        int simDistance = data.getLocalSimulationDistance();
 
         if (simDistance != 0)
             return simDistance;
@@ -41,6 +41,6 @@ public final class DistanceUtils {
         if (simDistance != 0)
             return simDistance;
 
-        return world.getServer().getPlayerList().getSimulationDistance() + 1;
+        return level.getServer().getPlayerList().getSimulationDistance() + 1;
     }
 }

@@ -5,7 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import me.basiqueevangelist.worldspecificviewdistance.WSVDSavedData;
 import me.basiqueevangelist.worldspecificviewdistance.component.WSVDComponents;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -40,38 +40,38 @@ public final class ViewDistanceCommand {
     public static int setWorldViewDistance(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         int viewdist = IntegerArgumentType.getInteger(ctx,"viewDistance");
         CommandSourceStack src = ctx.getSource();
-        ServerLevel w = DimensionArgument.getDimension(ctx, "dimension");
+        ServerLevel l = DimensionArgument.getDimension(ctx, "dimension");
 
-        WSVDPersistentState state = WSVDPersistentState.getFrom(w);
-        state.setLocalViewDistance(viewdist);
+        WSVDSavedData data = WSVDSavedData.getFrom(l);
+        data.setLocalViewDistance(viewdist);
 
-        for (ServerPlayer spe : w.players()) {
-            spe.connection.send(new ClientboundSetChunkCacheRadiusPacket(viewdist == 0 ? w.getServer().getPlayerList().getViewDistance() : viewdist-1));
+        for (ServerPlayer player : l.players()) {
+            player.connection.send(new ClientboundSetChunkCacheRadiusPacket(viewdist == 0 ? l.getServer().getPlayerList().getViewDistance() : viewdist-1));
         }
 
-        w.getChunkSource().setViewDistance(viewdist == 0 ? w.getServer().getPlayerList().getViewDistance(): viewdist-1);
+        l.getChunkSource().setViewDistance(viewdist == 0 ? l.getServer().getPlayerList().getViewDistance(): viewdist-1);
 
         src.sendSuccess(() -> CommandUtils.getMessage(
     		"Set view distance of world %s to %d",
-            CommandUtils.getRegistryId(w), viewdist), true);
+            CommandUtils.getRegistryId(l), viewdist), true);
         return 1;
     }
 
     public static int getWorldViewDistance(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         CommandSourceStack src = ctx.getSource();
-        ServerLevel w = DimensionArgument.getDimension(ctx, "dimension");
+        ServerLevel l = DimensionArgument.getDimension(ctx, "dimension");
 
-        WSVDPersistentState state = WSVDPersistentState.getFrom(w);
-        int viewDist = state.getLocalViewDistance();
+        WSVDSavedData data = WSVDSavedData.getFrom(l);
+        int viewDist = data.getLocalViewDistance();
 
         if (viewDist != 0) {
             src.sendSuccess(() -> CommandUtils.getMessage(
                 "View distance of world %s is %d",
-                CommandUtils.getRegistryId(w), viewDist), false);
+                CommandUtils.getRegistryId(l), viewDist), false);
         }
         else {
             src.sendSuccess(() -> CommandUtils.getMessage("View distance of world %s is unspecified (currently %d)",
-                CommandUtils.getRegistryId(w), src.getServer().getPlayerList().getViewDistance()+1), false);
+                CommandUtils.getRegistryId(l), src.getServer().getPlayerList().getViewDistance()+1), false);
         }
 
         return 1;

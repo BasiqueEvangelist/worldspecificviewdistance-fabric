@@ -8,21 +8,21 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 
-public class WSVDPersistentState extends SavedData {
+public class WSVDSavedData extends SavedData {
     public static final String ID = "worldspecificviewdistance";
-    public static final SavedDataType<WSVDPersistentState> TYPE = new SavedDataType<>(
-            ID, WSVDPersistentState::new,
-        Packed.CODEC.xmap(WSVDPersistentState::unpackState, WSVDPersistentState::pack), DataFixTypes.LEVEL
+    public static final SavedDataType<WSVDSavedData> TYPE = new SavedDataType<>(
+            ID, WSVDSavedData::new,
+        Packed.CODEC.xmap(WSVDSavedData::unpackData, WSVDSavedData::pack), DataFixTypes.LEVEL
     );
 
     private int localViewDistance;
     private int localSimulationDistance;
 
-    public static WSVDPersistentState getFrom(ServerLevel w) {
+    public static WSVDSavedData getFrom(ServerLevel w) {
         return getFrom(w.getDataStorage());
     }
 
-    public static WSVDPersistentState getFrom(DimensionDataStorage mgr) {
+    public static WSVDSavedData getFrom(DimensionDataStorage mgr) {
         return mgr.computeIfAbsent(TYPE);
     }
 
@@ -49,15 +49,15 @@ public class WSVDPersistentState extends SavedData {
         return true;
     }
 
-    private static WSVDPersistentState unpackState(WSVDPersistentState.Packed packedState) {
-        var state = new WSVDPersistentState();
-        state.localViewDistance = packedState.localViewDistance;
-        state.localSimulationDistance = packedState.localSimulationDistance;
+    private static WSVDSavedData unpackData(WSVDSavedData.Packed packedData) {
+        var state = new WSVDSavedData();
+        state.localViewDistance = packedData.localViewDistance;
+        state.localSimulationDistance = packedData.localSimulationDistance;
         return state;
     }
 
-    private static WSVDPersistentState.Packed pack(WSVDPersistentState state) {
-        return new Packed(state.localViewDistance, state.localSimulationDistance);
+    private static WSVDSavedData.Packed pack(WSVDSavedData data) {
+        return new Packed(data.localViewDistance, data.localSimulationDistance);
     }
 
     public record Packed(

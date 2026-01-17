@@ -1,22 +1,19 @@
 package me.basiqueevangelist.worldspecificviewdistance.mixin;
 
-import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import me.basiqueevangelist.worldspecificviewdistance.WSVDSavedData;
 import net.minecraft.network.protocol.game.ClientboundSetChunkCacheRadiusPacket;
 import net.minecraft.network.protocol.game.ClientboundSetSimulationDistancePacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.*;
 
 @Mixin(PlayerList.class)
-public class PlayerManagerMixin  {
+public class PlayerListMixin {
 	@Shadow private int viewDistance;
 	@Shadow @Final private MinecraftServer server;
 	@Shadow private int simulationDistance;
-	@Unique private static final Logger LOGGER = LogManager.getLogger("WSVD/PlayerManagerMixin");
 
 	/**
 	 * @reason Completely replaces logic.
@@ -28,8 +25,8 @@ public class PlayerManagerMixin  {
 		this.viewDistance = viewDistance;
 
 		for (ServerLevel w : server.getAllLevels()) {
-			WSVDPersistentState state = WSVDPersistentState.getFrom(w);
-			if (state.getLocalViewDistance() == 0)
+			WSVDSavedData data = WSVDSavedData.getFrom(w);
+			if (data.getLocalViewDistance() == 0)
 			{
 				for (ServerPlayer spe : w.players())
 				{
@@ -50,8 +47,8 @@ public class PlayerManagerMixin  {
 		this.simulationDistance = simulationDistance;
 
 		for (ServerLevel w : server.getAllLevels()) {
-			WSVDPersistentState state = WSVDPersistentState.getFrom(w);
-			if (state.getLocalSimulationDistance() == 0)
+			WSVDSavedData data = WSVDSavedData.getFrom(w);
+			if (data.getLocalSimulationDistance() == 0)
 			{
 				for (ServerPlayer spe : w.players())
 				{
