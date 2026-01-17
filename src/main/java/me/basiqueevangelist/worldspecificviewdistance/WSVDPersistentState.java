@@ -2,15 +2,15 @@ package me.basiqueevangelist.worldspecificviewdistance;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.datafixer.DataFixTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateManager;
-import net.minecraft.world.PersistentStateType;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 
-public class WSVDPersistentState extends PersistentState {
+public class WSVDPersistentState extends SavedData {
     public static final String ID = "worldspecificviewdistance";
-    public static final PersistentStateType<WSVDPersistentState> TYPE = new PersistentStateType<>(
+    public static final SavedDataType<WSVDPersistentState> TYPE = new SavedDataType<>(
             ID, WSVDPersistentState::new,
         Packed.CODEC.xmap(WSVDPersistentState::unpackState, WSVDPersistentState::pack), DataFixTypes.LEVEL
     );
@@ -18,12 +18,12 @@ public class WSVDPersistentState extends PersistentState {
     private int localViewDistance;
     private int localSimulationDistance;
 
-    public static WSVDPersistentState getFrom(ServerWorld w) {
-        return getFrom(w.getPersistentStateManager());
+    public static WSVDPersistentState getFrom(ServerLevel w) {
+        return getFrom(w.getDataStorage());
     }
 
-    public static WSVDPersistentState getFrom(PersistentStateManager mgr) {
-        return mgr.getOrCreate(TYPE);
+    public static WSVDPersistentState getFrom(DimensionDataStorage mgr) {
+        return mgr.computeIfAbsent(TYPE);
     }
 
     public int getLocalViewDistance() {

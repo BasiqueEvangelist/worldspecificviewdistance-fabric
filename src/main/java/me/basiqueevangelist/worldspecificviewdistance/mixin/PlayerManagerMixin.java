@@ -1,22 +1,17 @@
 package me.basiqueevangelist.worldspecificviewdistance.mixin;
 
-import net.minecraft.network.packet.s2c.play.SimulationDistanceS2CPacket;
+import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
+import net.minecraft.network.protocol.game.ClientboundSetChunkCacheRadiusPacket;
+import net.minecraft.network.protocol.game.ClientboundSetSimulationDistancePacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 
-import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
-import net.minecraft.network.packet.s2c.play.ChunkLoadDistanceS2CPacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-
-@Mixin(PlayerManager.class)
+@Mixin(PlayerList.class)
 public class PlayerManagerMixin  {
 	@Shadow private int viewDistance;
 	@Shadow @Final private MinecraftServer server;
@@ -32,15 +27,15 @@ public class PlayerManagerMixin  {
 	{
 		this.viewDistance = viewDistance;
 
-		for (ServerWorld w : server.getWorlds()) {
+		for (ServerLevel w : server.getAllLevels()) {
 			WSVDPersistentState state = WSVDPersistentState.getFrom(w);
 			if (state.getLocalViewDistance() == 0)
 			{
-				for (ServerPlayerEntity spe : w.getPlayers())
+				for (ServerPlayer spe : w.players())
 				{
-					spe.networkHandler.sendPacket(new ChunkLoadDistanceS2CPacket(viewDistance));
+					spe.connection.send(new ClientboundSetChunkCacheRadiusPacket(viewDistance));
 				}
-				w.getChunkManager().applyViewDistance(viewDistance);
+				w.getChunkSource().setViewDistance(viewDistance);
 			}
 		}
 	}
@@ -54,15 +49,15 @@ public class PlayerManagerMixin  {
 	{
 		this.simulationDistance = simulationDistance;
 
-		for (ServerWorld w : server.getWorlds()) {
+		for (ServerLevel w : server.getAllLevels()) {
 			WSVDPersistentState state = WSVDPersistentState.getFrom(w);
 			if (state.getLocalSimulationDistance() == 0)
 			{
-				for (ServerPlayerEntity spe : w.getPlayers())
+				for (ServerPlayer spe : w.players())
 				{
-					spe.networkHandler.sendPacket(new SimulationDistanceS2CPacket(simulationDistance));
+					spe.connection.send(new ClientboundSetSimulationDistancePacket(simulationDistance));
 				}
-				w.getChunkManager().applySimulationDistance(simulationDistance);
+				w.getChunkSource().setSimulationDistance(simulationDistance);
 			}
 		}
 	}

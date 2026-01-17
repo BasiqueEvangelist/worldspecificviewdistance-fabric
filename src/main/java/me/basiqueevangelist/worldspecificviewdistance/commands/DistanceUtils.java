@@ -3,16 +3,16 @@ package me.basiqueevangelist.worldspecificviewdistance.commands;
 import me.basiqueevangelist.worldspecificviewdistance.WSVDPersistentState;
 import me.basiqueevangelist.worldspecificviewdistance.component.GlobalDistanceComponent;
 import me.basiqueevangelist.worldspecificviewdistance.component.WSVDComponents;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 public final class DistanceUtils {
     private DistanceUtils() {
 
     }
 
-    public static int resolveViewDistance(ServerWorld world) {
+    public static int resolveViewDistance(ServerLevel world) {
         WSVDPersistentState state = WSVDPersistentState.getFrom(world);
-        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(world.getServer().getSaveProperties());
+        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(world.getServer().getWorldData());
 
         int viewDistance = state.getLocalViewDistance();
 
@@ -24,12 +24,12 @@ public final class DistanceUtils {
         if (viewDistance != 0)
             return viewDistance;
 
-        return world.getServer().getPlayerManager().getViewDistance() + 1;
+        return world.getServer().getPlayerList().getViewDistance() + 1;
     }
 
-    public static int resolveSimulationDistance(ServerWorld world) {
+    public static int resolveSimulationDistance(ServerLevel world) {
         WSVDPersistentState state = WSVDPersistentState.getFrom(world);
-        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(world.getServer().getSaveProperties());
+        GlobalDistanceComponent globalDist = WSVDComponents.GLOBAL_DISTANCE.get(world.getServer().getWorldData());
 
         int simDistance = state.getLocalSimulationDistance();
 
@@ -41,6 +41,6 @@ public final class DistanceUtils {
         if (simDistance != 0)
             return simDistance;
 
-        return world.getServer().getPlayerManager().getSimulationDistance() + 1;
+        return world.getServer().getPlayerList().getSimulationDistance() + 1;
     }
 }
