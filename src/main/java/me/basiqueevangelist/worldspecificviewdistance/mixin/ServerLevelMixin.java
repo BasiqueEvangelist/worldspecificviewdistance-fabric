@@ -34,7 +34,7 @@ public abstract class ServerLevelMixin extends Level {
     
     @Inject(method = "<init>*", at = @At(value = "RETURN"), require = 1)
     public void setViewDistanceOnCreate(CallbackInfo cb) {
-        ServerChunkCache cache = (ServerChunkCache)getChunkSource();
+        ServerChunkCache cache = (ServerChunkCache) this.getChunkSource();
 
         int viewDistance = DistanceUtils.resolveViewDistance((ServerLevel)(Object) this);
         cache.setViewDistance(viewDistance - 1);

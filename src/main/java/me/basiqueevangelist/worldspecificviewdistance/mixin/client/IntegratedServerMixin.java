@@ -10,12 +10,12 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin extends MinecraftServer {
     public IntegratedServerMixin() {
-        super(null, null, null, null, null, null, null, null);
+        super(null, null, null, null, null, null, null, null, null, false, null);
     }
 
     @ModifyVariable(method = "tickServer", at = @At(value = "LOAD", ordinal = 0), index = 4)
     private int makeIntegratedServerNotMald(int viewDist) {
-        var component = WSVDComponents.GLOBAL_DISTANCE.get(worldData);
+        var component = WSVDComponents.GLOBAL_DISTANCE.get(this.worldData);
 
         if (component.globalViewDistance != 0) {
             return component.globalViewDistance - 1;
@@ -26,7 +26,7 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
 
     @ModifyVariable(method = "tickServer", at = @At(value = "LOAD", ordinal = 0), index = 5)
     private int makeIntegratedServerNotMaldTwo(int simDist) {
-        var component = WSVDComponents.GLOBAL_DISTANCE.get(worldData);
+        var component = WSVDComponents.GLOBAL_DISTANCE.get(this.worldData);
 
         if (component.globalSimulationDistance != 0) {
             return component.globalSimulationDistance - 1;
