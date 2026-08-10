@@ -2,14 +2,16 @@ package me.basiqueevangelist.worldspecificviewdistance;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
 
 public class WSVDSavedData extends SavedData {
-    public static final String ID = "worldspecificviewdistance";
+    public static final Identifier ID = Identifier.fromNamespaceAndPath("worldspecificviewdistance", "worldspecificviewdistance");
     public static final SavedDataType<WSVDSavedData> TYPE = new SavedDataType<>(
             ID, WSVDSavedData::new,
         Packed.CODEC.xmap(WSVDSavedData::unpackData, WSVDSavedData::pack), DataFixTypes.LEVEL
@@ -22,21 +24,21 @@ public class WSVDSavedData extends SavedData {
         return getFrom(w.getDataStorage());
     }
 
-    public static WSVDSavedData getFrom(DimensionDataStorage mgr) {
+    public static WSVDSavedData getFrom(SavedDataStorage mgr) {
         return mgr.computeIfAbsent(TYPE);
     }
 
     public int getLocalViewDistance() {
-        return localViewDistance;
+        return this.localViewDistance;
     }
 
     public int getLocalSimulationDistance() {
-        return localSimulationDistance;
+        return this.localSimulationDistance;
     }
 
     public void setLocalViewDistance(int viewDistance) {
-        if (viewDistance != localViewDistance) {
-            localViewDistance = viewDistance;
+        if (viewDistance != this.localViewDistance) {
+            this.localViewDistance = viewDistance;
         }
     }
 

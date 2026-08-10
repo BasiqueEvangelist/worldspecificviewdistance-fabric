@@ -2,9 +2,10 @@ package me.basiqueevangelist.worldspecificviewdistance.component;
 
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.ladysnake.cca.api.v3.component.Component;
+import org.ladysnake.cca.api.v8.component.CardinalComponent;
 
-public class GlobalDistanceComponent implements Component {
+public class GlobalDistanceComponent implements CardinalComponent
+{
     public int globalViewDistance = 0;
     public int globalSimulationDistance = 0;
 
@@ -16,7 +17,7 @@ public class GlobalDistanceComponent implements Component {
 
     @Override
     public void writeData(ValueOutput writeView) {
-        writeView.putInt("GlobalViewDistance", globalViewDistance);
-        writeView.putInt("GlobalSimulationDistance", globalSimulationDistance);
+        writeView.putInt("GlobalViewDistance", this.globalViewDistance);
+        writeView.putInt("GlobalSimulationDistance", this.globalSimulationDistance);
     }
 }

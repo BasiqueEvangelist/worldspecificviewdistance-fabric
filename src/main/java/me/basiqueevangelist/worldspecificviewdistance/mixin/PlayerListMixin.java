@@ -24,7 +24,7 @@ public class PlayerListMixin {
 	{
 		this.viewDistance = viewDistance;
 
-		for (ServerLevel w : server.getAllLevels()) {
+		for (ServerLevel w : this.server.getAllLevels()) {
 			WSVDSavedData data = WSVDSavedData.getFrom(w);
 			if (data.getLocalViewDistance() == 0)
 			{
@@ -46,7 +46,7 @@ public class PlayerListMixin {
 	{
 		this.simulationDistance = simulationDistance;
 
-		for (ServerLevel w : server.getAllLevels()) {
+		for (ServerLevel w : this.server.getAllLevels()) {
 			WSVDSavedData data = WSVDSavedData.getFrom(w);
 			if (data.getLocalSimulationDistance() == 0)
 			{
